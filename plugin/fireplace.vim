@@ -268,7 +268,8 @@ endfunction
 let s:piggieback = copy(s:repl)
 
 function! s:repl.piggieback(arg, ...) abort
-  if a:0 && a:1
+  let isbang = a:0 && a:1
+  if empty(a:arg) && isbang
     if len(self.piggiebacks)
       call remove(self.piggiebacks, 0)
     endif
@@ -276,16 +277,20 @@ function! s:repl.piggieback(arg, ...) abort
   endif
 
   let connection = s:conn_try(self.connection, 'clone')
-  if empty(a:arg)
-    let arg = ''
-  elseif a:arg =~# '^\d\{1,5}$'
-    call connection.eval("(require 'cljs.repl.browser)")
-    let port = matchstr(a:arg, '^\d\{1,5}$')
-    let arg = ' (cljs.repl.browser/repl-env :port '.port.')'
+  if isbang
+    let response = connection.eval(a:arg)
   else
-    let arg = ' ' . a:arg
+    if empty(a:arg)
+      let arg = ''
+    elseif a:arg =~# '^\d\{1,5}$'
+      call connection.eval("(require 'cljs.repl.browser)")
+      let port = matchstr(a:arg, '^\d\{1,5}$')
+      let arg = ' (cljs.repl.browser/repl-env :port '.port.')'
+    else
+      let arg = ' ' . a:arg
+    endif
+    let response = connection.eval('(cemerick.piggieback/cljs-repl'.arg.')')
   endif
-  let response = connection.eval('(cemerick.piggieback/cljs-repl'.arg.')')
 
   if empty(get(response, 'ex'))
     call insert(self.piggiebacks, extend({'connection': connection}, deepcopy(s:piggieback)))
