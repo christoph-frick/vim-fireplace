@@ -1022,6 +1022,26 @@ function! s:macroexpand1op(type) abort
   call fireplace#macroexpand("macroexpand-1", s:opfunc(a:type))
 endfunction
 
+function! s:formatop(type) abort
+  let reg_save = @@
+  let sel_save = &selection
+  let cb_save = &clipboard
+  try
+    set selection=inclusive clipboard-=unnamed clipboard-=unnamedplus
+    let response = fireplace#message({'op': 'format-code', 'code':  s:opfunc(a:type)})[0]
+    if !empty(get(response, 'formatted-code'))
+      let @@ = get(response, 'formatted-code')
+      if @@ !~# '^\n*$'
+        normal! gvp
+      endif
+    endif
+  finally
+    let @@ = reg_save
+    let &selection = sel_save
+    let &clipboard = cb_save
+  endtry
+endfunction
+
 function! s:printop(type) abort
   let s:todo = s:opfunc(a:type)
   call feedkeys("\<Plug>FireplacePrintLast")
@@ -1187,6 +1207,10 @@ nnoremap <silent> <Plug>FireplaceFilter :<C-U>set opfunc=<SID>filterop<CR>g@
 xnoremap <silent> <Plug>FireplaceFilter :<C-U>call <SID>filterop(visualmode())<CR>
 nnoremap <silent> <Plug>FireplaceCountFilter :<C-U>call <SID>filterop(v:count)<CR>
 
+nnoremap <silent> <Plug>FireplaceFormat :<C-U>set opfunc=<SID>formatop<CR>g@
+xnoremap <silent> <Plug>FireplaceFormat :<C-U>call <SID>formatop(visualmode())<CR>
+nnoremap <silent> <Plug>FireplaceCountFormat :<C-U>call <SID>formatop(v:count)<CR>
+
 nnoremap <silent> <Plug>FireplaceMacroExpand  :<C-U>set opfunc=<SID>macroexpandop<CR>g@
 xnoremap <silent> <Plug>FireplaceMacroExpand  :<C-U>call <SID>macroexpandop(visualmode())<CR>
 nnoremap <silent> <Plug>FireplaceCountMacroExpand  :<C-U>call <SID>macroexpandop(v:count)<CR>
@@ -1231,6 +1255,9 @@ function! s:set_up_eval() abort
 
   nmap <buffer> cp <Plug>FireplacePrint
   nmap <buffer> cpp <Plug>FireplaceCountPrint
+
+  nmap <buffer> cf <Plug>FireplaceFormat
+  nmap <buffer> cff <Plug>FireplaceCountFormat
 
   nmap <buffer> c! <Plug>FireplaceFilter
   nmap <buffer> c!! <Plug>FireplaceCountFilter
