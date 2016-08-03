@@ -1030,7 +1030,7 @@ function! s:formatop(type) abort
     set selection=inclusive clipboard-=unnamed clipboard-=unnamedplus
     let response = fireplace#message({'op': 'format-code', 'code':  s:opfunc(a:type)})[0]
     if !empty(get(response, 'formatted-code'))
-      let @@ = get(response, 'formatted-code')
+      let @@ = substitute(get(response, 'formatted-code'), '^\n\+', '', 'g')
       if @@ !~# '^\n*$'
         normal! gvp
       endif
