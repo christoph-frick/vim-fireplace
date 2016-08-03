@@ -1256,9 +1256,6 @@ function! s:set_up_eval() abort
   nmap <buffer> cp <Plug>FireplacePrint
   nmap <buffer> cpp <Plug>FireplaceCountPrint
 
-  nmap <buffer> cf <Plug>FireplaceFormat
-  nmap <buffer> cff <Plug>FireplaceCountFormat
-
   nmap <buffer> c! <Plug>FireplaceFilter
   nmap <buffer> c!! <Plug>FireplaceCountFilter
 
@@ -1266,6 +1263,9 @@ function! s:set_up_eval() abort
   nmap <buffer> cmm <Plug>FireplaceCountMacroExpand
   nmap <buffer> c1m <Plug>Fireplace1MacroExpand
   nmap <buffer> c1mm <Plug>FireplaceCount1MacroExpand
+
+  nmap <buffer> cf <Plug>FireplaceFormat
+  nmap <buffer> cff <Plug>FireplaceCountFormat
 
   nmap <buffer> cq <Plug>FireplaceEdit
   nmap <buffer> cqq <Plug>FireplaceCountEdit
