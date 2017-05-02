@@ -1827,7 +1827,8 @@ function! fireplace#Format() abort
   let cb_save = &clipboard
   try
     set selection=inclusive clipboard-=unnamed clipboard-=unnamedplus
-    let response = fireplace#message({'op': 'format-code', 'code':  join(getline(v:lnum, v:lnum+v:count-1), "\n")})[0]
+    silent exe "normal! " . string(v:lnum) . "ggV" . string(v:count-1) . "jy"
+    let response = fireplace#message({'op': 'format-code', 'code': @@})[0]
     if !empty(get(response, 'formatted-code'))
       let @@ = substitute(get(response, 'formatted-code'), '^\n\+', '', 'g')
       if @@ !~# '^\n*$'
