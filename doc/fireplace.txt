@@ -156,12 +156,6 @@ c1m{motion}             Macroexpand the code indicated by {motion} once.
                                                 *fireplace-c1mm*
 c1mm                    Macroexpand the innermost form at the cursor once.
 
-                                                *fireplace-cf*
-cf{motion}              Format the code via cljfmt indicated by {motion}.
-
-                                                *fireplace-cff*
-cff                     Format the innermost form via cljfmt at the cursor.
-
                                                 *fireplace-cqp*
 cqp                     Bring up a prompt for code to eval/print.
 
